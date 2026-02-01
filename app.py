@@ -16,3 +16,19 @@ latlon_data = {
     'オーストラリア': [-25.2744, 133.7751],
     'ベトナム': [14.0583, 108.2772]
 }
+def add_latlon(country_name):
+    return latlon_data.get(country_name, None)
+
+# データフレームに緯度(lat)と経度(lon)を追加
+df['lat'] = df['国籍'].map(lambda x: latlon_data[x][0] if x in latlon_data else None)
+df['lon'] = df['国籍'].map(lambda x: latlon_data[x][1] if x in latlon_data else None)
+
+st.title('🇯🇵 訪日外国人 消費動向＆マップ')
+st.caption('出典：e-Stat 訪日外国人消費動向調査')
+
+st.sidebar.header('検索条件')
+selected_countries = st.sidebar.multiselect(
+    '表示する国・地域を選択',
+    options=df['国籍'].unique(),
+    default=['韓国', '台湾', '米国', '中国', '香港'] # 初期表示
+)
