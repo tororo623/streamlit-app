@@ -76,7 +76,13 @@ with tab2:
         st.warning("選択された国の位置情報データがありません。")
 with tab3:
     st.subheader('元のデータを確認')
-    # ▼ UI部品④：st.expander（折りたたみ）
+    max_val = df['旅行消費単価'].max()
+    
+    for index, row in filtered_df.sort_values('旅行消費単価', ascending=False).iterrows():
+        ratio = row['旅行消費単価'] / max_val
+        st.write(f"**{row['国籍']}**: {row['旅行消費単価']:,} 円")
+        st.progress(ratio)
+        st.divider()
     with st.expander("データ表を開く"):
         st.dataframe(filtered_df)
-        st.write("このデータはCSVから読み込まれています。")
+        st.write("このデータはCSVから読み込んでいます。")
