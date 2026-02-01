@@ -53,10 +53,18 @@ tab1, tab2, tab3 = st.tabs(["グラフ比較", "世界地図", "データ詳細"
 
 with tab1:
     st.subheader('国別の消費単価ランキング')
-    if not filtered_df.empty:
-        # 棒グラフ
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        st.write("棒グラフ")
         st.bar_chart(filtered_df.set_index('国籍')['旅行消費単価'])
-        st.caption("棒グラフ：国ごとの消費額の違い")
+        
+    with col2:
+        st.write("円グラフ")
+        fig, ax = plt.subplots()
+        ax.pie(filtered_df['旅行消費単価'], labels=filtered_df['国籍'], autopct='%1.1f%%', startangle=90)
+        ax.axis('equal') 
+        st.pyplot(fig)
 
 with tab2:
     st.subheader('来訪元の国をマップで確認')
