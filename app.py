@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
+plt.rcParams['font.family'] = 'MS Gothic'
 
 df = pd.read_csv('cleaned_tourism_data.csv')
 
@@ -32,7 +33,11 @@ selected_countries = st.sidebar.multiselect(
     options=df['国籍'].unique(),
     default=['韓国', '台湾', '米国', '中国', '香港'] # 初期表示
 )
-filtered_df = df[df['国籍'].isin(selected_countries)]
+min_price = st.sidebar.slider('最低いくら使っているのか？（円）', 0, 300000, 0, 10000)
+filtered_df = df[
+    (df['国籍'].isin(selected_countries)) & 
+    (df['旅行消費単価'] >= min_price)
+]
 
 if not filtered_df.empty:
     top_country = filtered_df.sort_values('旅行消費単価', ascending=False).iloc[0]
@@ -61,3 +66,9 @@ with tab2:
         st.caption("※主要な国のみ位置を表示")
     else:
         st.warning("選択された国の位置情報データがありません。")
+with tab3:
+    st.subheader('元のデータを確認')
+    # ▼ UI部品④：st.expander（折りたたみ）
+    with st.expander("データ表を開く"):
+        st.dataframe(filtered_df)
+        st.write("このデータはCSVから読み込まれています。")
